@@ -1,0 +1,494 @@
+[
+  {
+    "id": "1",
+    "slug": "d4cb-diesel-engine-used-starex",
+    "name": "Motor diésel D4CB (usado)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2015–2021",
+    "description": "Motor diésel D4CB 2.5 usado para Hyundai Starex. Inspección básica previa al desmontaje. Kilometraje y estado detallado bajo consulta.",
+    "specs": {
+      "Código motor": "D4CB",
+      "Cilindrada": "2.497 cc",
+      "Combustible": "Diésel",
+      "Compatible": "Hyundai Starex, H-1"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80"
+    ],
+    "featured": true,
+    "erpId": "JNB-001",
+    "oemNumbers": ["391002A000"],
+    "stockQty": 3
+  },
+  {
+    "id": "2",
+    "slug": "d4bh-diesel-engine-used-porter",
+    "name": "Motor diésel D4BH (usado)",
+    "vehicle": "porter",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2010–2020",
+    "description": "Motor diésel D4BH 2.5 usado para Hyundai Porter. Pieza de desguace o taller con envío rápido tras confirmar stock.",
+    "specs": {
+      "Código motor": "D4BH",
+      "Cilindrada": "2.476 cc",
+      "Combustible": "Diésel",
+      "Compatible": "Hyundai Porter, Kia Bongo"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80"
+    ],
+    "featured": true,
+    "erpId": "JNB-002",
+    "oemNumbers": ["391002A001"],
+    "stockQty": 1
+  },
+  {
+    "id": "3",
+    "slug": "j3-diesel-engine-used-bongo",
+    "name": "Motor diésel J3 (usado)",
+    "vehicle": "bongo",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2005–2018",
+    "description": "Motor diésel J3 usado para Kia Bongo. A menudo compatible con Hyundai Porter; confirme VIN antes de comprar.",
+    "specs": {
+      "Código motor": "J3",
+      "Cilindrada": "2.902 cc",
+      "Combustible": "Diésel",
+      "Compatible": "Kia Bongo, Hyundai Porter"
+    },
+    "images": [
+      "/images/vehicles/bongo.jpg",
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80"
+    ],
+    "featured": true,
+    "erpId": "JNB-003",
+    "oemNumbers": [],
+    "stockQty": 0
+  },
+  {
+    "id": "4",
+    "slug": "g4kd-gas-engine-used-staria",
+    "name": "Motor gasolina G4KD (usado)",
+    "vehicle": "staria",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2021–2024",
+    "description": "Motor gasolina G4KD 2.2 usado para Hyundai Staria. Stock variable; consulte disponibilidad con antelación.",
+    "specs": {
+      "Código motor": "G4KD",
+      "Cilindrada": "2.199 cc",
+      "Combustible": "Gasolina",
+      "Compatible": "Hyundai Staria"
+    },
+    "images": [
+      "/images/vehicles/staria.jpg",
+      "https://images.unsplash.com/photo-1583121274602-3e2820cff395?w=800&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": "5",
+    "slug": "d4cb-engine-new-starex",
+    "name": "Motor diésel D4CB (nuevo)",
+    "vehicle": "starex",
+    "condition": "new",
+    "category": "engine",
+    "yearRange": "2015–2021",
+    "description": "Motor D4CB nuevo o reacondicionado para Hyundai Starex. Calidad OEM con garantía según producto.",
+    "specs": {
+      "Código motor": "D4CB",
+      "Estado": "Nuevo",
+      "Garantía": "Consultar"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&q=80"
+    ]
+  },
+  {
+    "id": "6",
+    "slug": "a6mf2-transmission-used-starex",
+    "name": "Transmisión automática A6MF2 (usada)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "transmission",
+    "yearRange": "2015–2020",
+    "description": "Caja automática de 6 velocidades A6MF2 usada para Hyundai Starex diésel. Revisión de aceite antes del envío.",
+    "specs": {
+      "Código": "A6MF2",
+      "Velocidades": "6 AT",
+      "Compatible": "D4CB diésel"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1625047509248-ec889cbff817?w=800&q=80"
+    ]
+  },
+  {
+    "id": "7",
+    "slug": "m6ha-transmission-used-staria",
+    "name": "Transmisión automática M6HA (usada)",
+    "vehicle": "staria",
+    "condition": "used",
+    "category": "transmission",
+    "yearRange": "2021–2024",
+    "description": "Caja automática M6HA usada para Hyundai Staria gasolina. Compatibilidad confirmada por VIN.",
+    "specs": {
+      "Código": "M6HA",
+      "Velocidades": "6 AT",
+      "Compatible": "G4KD gasolina"
+    },
+    "images": [
+      "/images/vehicles/staria.jpg",
+      "https://images.unsplash.com/photo-1625047509248-ec889cbff817?w=800&q=80"
+    ]
+  },
+  {
+    "id": "8",
+    "slug": "front-bumper-used-porter",
+    "name": "Paragolpes delantero (usado)",
+    "vehicle": "porter",
+    "condition": "used",
+    "category": "exterior",
+    "yearRange": "2012–2020",
+    "description": "Paragolpes delantero usado para Hyundai Porter. Estado de pintura y arañazos visibles en fotos. Recogida recomendada.",
+    "specs": {
+      "Pieza": "Paragolpes delantero",
+      "Color": "Consultar",
+      "Envío": "Paquetería / express / recogida"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80"
+    ]
+  },
+  {
+    "id": "9",
+    "slug": "headlamp-used-starex",
+    "name": "Faro delantero izq./der. (usado)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "exterior",
+    "yearRange": "2015–2021",
+    "description": "Faro delantero usado para Hyundai Starex. Venta individual izquierdo o derecho. Estado del lente en fotos.",
+    "specs": {
+      "Pieza": "Faro delantero",
+      "Lado": "Izquierdo / derecho",
+      "Tipo": "HID / halógeno (consultar)"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80"
+    ]
+  },
+  {
+    "id": "10",
+    "slug": "side-mirror-used-staria",
+    "name": "Espejo lateral (usado)",
+    "vehicle": "staria",
+    "condition": "used",
+    "category": "exterior",
+    "yearRange": "2021–2024",
+    "description": "Espejo lateral eléctrico plegable usado para Hyundai Staria. Verificación de código de color requerida.",
+    "specs": {
+      "Pieza": "Espejo lateral",
+      "Función": "Plegable eléctrico / intermitente",
+      "Lado": "Izquierdo / derecho"
+    },
+    "images": [
+      "/images/vehicles/staria.jpg",
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80"
+    ]
+  },
+  {
+    "id": "11",
+    "slug": "radiator-used-porter",
+    "name": "Radiador (usado)",
+    "vehicle": "porter",
+    "condition": "used",
+    "category": "other",
+    "yearRange": "2010–2020",
+    "description": "Radiador usado para Hyundai Porter diésel. Revisión de fugas antes del envío. Piezas nuevas también disponibles.",
+    "specs": {
+      "Pieza": "Radiador",
+      "Estado": "Usado",
+      "Compatible": "D4BH / J3"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&q=80"
+    ]
+  },
+  {
+    "id": "12",
+    "slug": "ecu-used-starex",
+    "name": "ECU / computadora motor (usada)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "electrical",
+    "yearRange": "2015–2021",
+    "description": "ECU usada para Hyundai Starex D4CB. Coincidencia de VIN y número de pieza obligatoria.",
+    "specs": {
+      "Pieza": "ECU",
+      "Compatible": "D4CB",
+      "Requisito": "Número de pieza exacto"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+    ]
+  },
+  {
+    "id": "13",
+    "slug": "alternator-used-bongo",
+    "name": "Alternador (usado)",
+    "vehicle": "bongo",
+    "condition": "used",
+    "category": "electrical",
+    "yearRange": "2005–2018",
+    "description": "Alternador usado para Kia Bongo J3. Prueba de carga antes del envío.",
+    "specs": {
+      "Pieza": "Alternador",
+      "Compatible": "J3 diésel",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/bongo.jpg",
+      "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=800&q=80"
+    ]
+  },
+  {
+    "id": "14",
+    "slug": "starter-motor-used-porter",
+    "name": "Motor de arranque (usado)",
+    "vehicle": "porter",
+    "condition": "used",
+    "category": "electrical",
+    "yearRange": "2010–2020",
+    "description": "Motor de arranque usado para Hyundai Porter diésel. Prueba de arranque antes del envío.",
+    "specs": {
+      "Pieza": "Motor de arranque",
+      "Compatible": "D4BH / J3",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80"
+    ]
+  },
+  {
+    "id": "15",
+    "slug": "turbocharger-used-starex",
+    "name": "Turbocompresor (usado)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2015–2021",
+    "description": "Turbocompresor usado para Hyundai Starex D4CB. Reacondicionados y nuevos también bajo consulta.",
+    "specs": {
+      "Pieza": "Turbocompresor",
+      "Motor": "D4CB",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80"
+    ]
+  },
+  {
+    "id": "16",
+    "slug": "fuel-injector-new-porter",
+    "name": "Inyector de combustible (nuevo)",
+    "vehicle": "porter",
+    "condition": "new",
+    "category": "engine",
+    "yearRange": "2010–2020",
+    "description": "Inyector CRDi nuevo para Hyundai Porter D4BH. Venta individual o en juego.",
+    "specs": {
+      "Pieza": "Inyector",
+      "Combustible": "Diésel CRDi",
+      "Estado": "Nuevo"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80"
+    ]
+  },
+  {
+    "id": "17",
+    "slug": "rear-door-used-staria",
+    "name": "Puerta corredera (usada)",
+    "vehicle": "staria",
+    "condition": "used",
+    "category": "exterior",
+    "yearRange": "2021–2024",
+    "description": "Puerta corredera usada para Hyundai Staria. Pieza grande; recogida o transporte de carga recomendado.",
+    "specs": {
+      "Pieza": "Puerta corredera",
+      "Lado": "Izquierdo / derecho",
+      "Envío": "Carga / recogida recomendada"
+    },
+    "images": [
+      "/images/vehicles/staria.jpg",
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80"
+    ]
+  },
+  {
+    "id": "18",
+    "slug": "cylinder-head-used-bongo",
+    "name": "Culata (usada)",
+    "vehicle": "bongo",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2005–2018",
+    "description": "Culata usada para Kia Bongo J3. Revisión de planitud y válvulas antes del envío.",
+    "specs": {
+      "Pieza": "Culata",
+      "Motor": "J3",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/bongo.jpg",
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80"
+    ]
+  },
+  {
+    "id": "19",
+    "slug": "manual-transmission-used-bongo",
+    "name": "Transmisión manual 5 vel. (usada)",
+    "vehicle": "bongo",
+    "condition": "used",
+    "category": "transmission",
+    "yearRange": "2005–2018",
+    "description": "Caja manual de 5 velocidades usada para Kia Bongo. Revisión de engranajes antes del envío.",
+    "specs": {
+      "Velocidades": "5 MT",
+      "Compatible": "J3 diésel",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/bongo.jpg",
+      "https://images.unsplash.com/photo-1625047509248-ec889cbff817?w=800&q=80"
+    ]
+  },
+  {
+    "id": "20",
+    "slug": "ac-compressor-used-starex",
+    "name": "Compresor A/C (usado)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "other",
+    "yearRange": "2015–2021",
+    "description": "Compresor de aire acondicionado usado para Hyundai Starex. Estado del gas requiere verificación adicional.",
+    "specs": {
+      "Pieza": "Compresor A/C",
+      "Compatible": "D4CB",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1583121274602-3e2820cff395?w=800&q=80"
+    ]
+  },
+  {
+    "id": "21",
+    "slug": "tail-lamp-new-porter",
+    "name": "Piloto trasero (nuevo)",
+    "vehicle": "porter",
+    "condition": "new",
+    "category": "exterior",
+    "yearRange": "2012–2020",
+    "description": "Piloto trasero nuevo tipo OEM/aftermarket para Hyundai Porter. Venta izquierdo, derecho o par.",
+    "specs": {
+      "Pieza": "Piloto trasero",
+      "Estado": "Nuevo",
+      "Opción": "Izq. / der. / par"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80"
+    ]
+  },
+  {
+    "id": "22",
+    "slug": "suspension-arm-used-staria",
+    "name": "Brazo de suspensión (usado)",
+    "vehicle": "staria",
+    "condition": "used",
+    "category": "other",
+    "yearRange": "2021–2024",
+    "description": "Brazo inferior de suspensión usado para Hyundai Staria. Venta delantera o trasera, izquierda o derecha.",
+    "specs": {
+      "Pieza": "Brazo inferior",
+      "Posición": "Delantera / trasera",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/staria.jpg",
+      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&q=80"
+    ]
+  },
+  {
+    "id": "23",
+    "slug": "d4cb-long-block-used-starex",
+    "name": "Long block D4CB (usado)",
+    "vehicle": "starex",
+    "condition": "used",
+    "category": "engine",
+    "yearRange": "2015–2021",
+    "description": "Long block D4CB (culata + bloque + cigüeñal) usado para Hyundai Starex. Muy demandado por talleres.",
+    "specs": {
+      "Configuración": "Long block",
+      "Motor": "D4CB",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/starex.jpg",
+      "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&q=80"
+    ]
+  },
+  {
+    "id": "24",
+    "slug": "intercooler-used-porter",
+    "name": "Intercooler (usado)",
+    "vehicle": "porter",
+    "condition": "used",
+    "category": "other",
+    "yearRange": "2010–2020",
+    "description": "Intercooler usado para Hyundai Porter D4BH. Fugas y daños visibles en fotos.",
+    "specs": {
+      "Pieza": "Intercooler",
+      "Compatible": "D4BH",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/porter.jpg",
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80"
+    ]
+  },
+  {
+    "id": "25",
+    "slug": "wiring-harness-used-staria",
+    "name": "Arnés eléctrico motor (usado)",
+    "vehicle": "staria",
+    "condition": "used",
+    "category": "electrical",
+    "yearRange": "2021–2024",
+    "description": "Arnés del compartimento motor usado para Hyundai Staria G4KD. Conectores revisados antes del envío.",
+    "specs": {
+      "Pieza": "Arnés eléctrico",
+      "Compatible": "G4KD",
+      "Estado": "Usado"
+    },
+    "images": [
+      "/images/vehicles/staria.jpg",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+    ]
+  }
+]

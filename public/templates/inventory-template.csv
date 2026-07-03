@@ -1,0 +1,4 @@
+ITEM_CD,OEM_NO,ITEM_NM,QTY,CAR_MODEL,COND,CATEGORY,YEAR_RANGE,DESCRIPTION,WAREHOUSE,SLUG,FEATURED
+JNB-001,391002A000,Motor diésel D4CB (usado),3,STAREX,U,ENGINE,2015-2021,Motor D4CB para Hyundai Starex,WH-01,d4cb-diesel-engine-used-starex,Y
+JNB-002,391002A001,Motor diésel D4BH (usado),1,PORTER,U,ENGINE,2010-2020,Motor D4BH para Hyundai Porter,WH-01,d4bh-diesel-engine-used-porter,Y
+JNB-003,,Motor diésel J3 (usado),0,BONGO,U,ENGINE,2005-2018,Motor J3 para Kia Bongo,WH-01,j3-diesel-engine-used-bongo,Y
