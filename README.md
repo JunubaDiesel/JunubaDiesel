@@ -98,6 +98,18 @@ Autenticación: **Basic Auth** del navegador (`ADMIN_PASSWORD`).
 7. Vercel → Domains → primary `www.junubadiesel.com`, apex → www redirect
 8. Verificar: `.\scripts\verify-production.ps1`
 
+### GitHub Actions (opcional)
+
+Tras importar en Vercel, añadir secrets en GitHub → Settings → Secrets:
+
+| Secret | Dónde obtenerlo |
+|--------|-----------------|
+| `VERCEL_TOKEN` | Vercel → Account → Tokens |
+| `VERCEL_ORG_ID` | Project → Settings → General |
+| `VERCEL_PROJECT_ID` | Project → Settings → General |
+
+Push a `main` dispara `.github/workflows/deploy-vercel.yml`.
+
 **Producción canonical:** `https://www.junubadiesel.com`
 
 ## Licencia

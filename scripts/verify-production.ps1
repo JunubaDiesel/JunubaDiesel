@@ -1,45 +1,57 @@
 # Verify www.junubadiesel.com deployment
 $ErrorActionPreference = "Continue"
-$base = "https://www.junubadiesel.com"
-$checks = @(
-  @{ name = "home"; url = "$base/"; expect = 200 },
-  @{ name = "catalog_redirect"; url = "$base/catalog"; expect = 308 },
-  @{ name = "contact"; url = "$base/contact"; expect = 200 },
-  @{ name = "parts"; url = "$base/parts"; expect = 200 }
-)
 
-Write-Host "`n=== Production verification ===" -ForegroundColor Cyan
-
-foreach ($c in $checks) {
+function Test-Url {
+  param(
+    [string]$Url,
+    [int[]]$ExpectCodes = @(200)
+  )
   try {
-    $resp = Invoke-WebRequest -Uri $c.url -MaximumRedirection 0 -SkipHttpErrorCheck -TimeoutSec 20
-    $ok = $resp.StatusCode -eq $c.expect -or ($c.name -eq "catalog_redirect" -and $resp.StatusCode -in 301, 302, 307, 308)
-    $color = if ($ok) { "Green" } else { "Red" }
-    Write-Host ("  [{0}] {1} -> {2} (expected {3})" -f $(if ($ok) { "OK" } else { "FAIL" }), $c.name, $resp.StatusCode, $c.expect) -ForegroundColor $color
-    if ($c.name -eq "catalog_redirect" -and $resp.Headers.Location) {
-      Write-Host "       Location: $($resp.Headers.Location)"
-    }
+    $resp = Invoke-WebRequest -Uri $Url -MaximumRedirection 0 -UseBasicParsing -TimeoutSec 20 -ErrorAction Stop
+    return @{ ok = ($resp.StatusCode -in $ExpectCodes); code = $resp.StatusCode; location = $resp.Headers.Location }
   } catch {
-    Write-Host "  [FAIL] $($c.name): $_" -ForegroundColor Red
+    if ($_.Exception.Response) {
+      $code = [int]$_.Exception.Response.StatusCode
+      return @{ ok = ($code -in $ExpectCodes); code = $code; location = $_.Exception.Response.Headers["Location"] }
+    }
+    return @{ ok = $false; code = 0; location = $null; error = $_.Exception.Message }
   }
 }
 
-try {
-  $apex = Invoke-WebRequest -Uri "https://junubadiesel.com/" -MaximumRedirection 0 -SkipHttpErrorCheck -TimeoutSec 20
-  $redirectOk = $apex.StatusCode -in 301, 302, 307, 308
-  Write-Host ("  [{0}] apex_redirect -> {1}" -f $(if ($redirectOk) { "OK" } else { "FAIL" }), $apex.StatusCode) -ForegroundColor $(if ($redirectOk) { "Green" } else { "Yellow" })
-  if ($apex.Headers.Location) { Write-Host "       Location: $($apex.Headers.Location)" }
-} catch {
-  Write-Host "  [WARN] apex_redirect: $_" -ForegroundColor Yellow
+$base = "https://www.junubadiesel.com"
+Write-Host "`n=== Production verification ===" -ForegroundColor Cyan
+
+$checks = @(
+  @{ name = "home"; url = "$base/"; expect = @(200) },
+  @{ name = "catalog_redirect"; url = "$base/catalog"; expect = @(301, 302, 307, 308) },
+  @{ name = "contact"; url = "$base/contact"; expect = @(200) },
+  @{ name = "parts"; url = "$base/parts"; expect = @(200) }
+)
+
+foreach ($c in $checks) {
+  $r = Test-Url -Url $c.url -ExpectCodes $c.expect
+  $label = if ($r.ok) { "OK" } else { "FAIL" }
+  $color = if ($r.ok) { "Green" } else { "Red" }
+  Write-Host ("  [{0}] {1} -> {2}" -f $label, $c.name, $r.code) -ForegroundColor $color
+  if ($r.location) { Write-Host "       Location: $($r.location)" }
+  if ($r.error) { Write-Host "       Error: $($r.error)" -ForegroundColor Red }
 }
 
-try {
-  $admin = Invoke-WebRequest -Uri "$base/admin/sync" -MaximumRedirection 0 -SkipHttpErrorCheck -TimeoutSec 20
-  $authOk = $admin.StatusCode -eq 401
-  Write-Host ("  [{0}] admin_auth (401 expected) -> {1}" -f $(if ($authOk) { "OK" } else { "FAIL" }), $admin.StatusCode) -ForegroundColor $(if ($authOk) { "Green" } else { "Yellow" })
-} catch {
-  Write-Host "  [WARN] admin_auth: $_" -ForegroundColor Yellow
-}
+$apex = Test-Url -Url "https://junubadiesel.com/" -ExpectCodes @(301, 302, 307, 308)
+Write-Host ("  [{0}] apex_redirect -> {1}" -f $(if ($apex.ok) { "OK" } else { "WARN" }), $apex.code) -ForegroundColor $(if ($apex.ok) { "Green" } else { "Yellow" })
+if ($apex.location) { Write-Host "       Location: $($apex.location)" }
 
-$server = (Invoke-WebRequest -Uri $base -SkipHttpErrorCheck -TimeoutSec 20).Headers["Server"]
-Write-Host "`n  Server header: $server" -ForegroundColor $(if ($server -match "Vercel") { "Green" } else { "Yellow" })
+$admin = Test-Url -Url "$base/admin/sync" -ExpectCodes @(401)
+Write-Host ("  [{0}] admin_auth (401 expected) -> {1}" -f $(if ($admin.ok) { "OK" } else { "WARN" }), $admin.code) -ForegroundColor $(if ($admin.ok) { "Green" } else { "Yellow" })
+
+try {
+  $homeResp = Invoke-WebRequest -Uri $base -UseBasicParsing -TimeoutSec 20
+  $server = $homeResp.Headers["Server"]
+  $isVercel = $server -match "Vercel" -or $homeResp.Headers["X-Vercel-Id"]
+  Write-Host "`n  Server: $server" -ForegroundColor $(if ($isVercel) { "Green" } else { "Yellow" })
+  if (-not $isVercel) {
+    Write-Host "  (Still on Squarespace — update DNS: @ A 76.76.21.21, www CNAME cname.vercel-dns.com)" -ForegroundColor Yellow
+  }
+} catch {
+  Write-Host "  Server check failed: $_" -ForegroundColor Red
+}
