@@ -1,7 +1,7 @@
 import type { CategoryId, ConditionId, VehicleId } from "@/config/site";
 import type { Part } from "@/types/part";
 import { hasInventoryImage } from "@/lib/erp/excel-map";
-import { getInventory } from "@/lib/inventory";
+import { getInventory, getInventoryAsync } from "@/lib/inventory";
 
 function sortByStock(parts: Part[]): Part[] {
   return [...parts].sort((a, b) => {
@@ -141,14 +141,63 @@ export function buildPartsQuery(options: PartSearchOptions): string {
   return query ? `?${query}` : "";
 }
 
-export function filterParts(filters: PartFilters): Part[] {
-  const filtered = getInventory().filter((part) => {
+export function filterParts(filters: PartFilters, inventory = getInventory()): Part[] {
+  const filtered = inventory.filter((part) => {
     if (filters.vehicle && part.vehicle !== filters.vehicle) return false;
     if (filters.condition && part.condition !== filters.condition) return false;
     if (filters.category && part.category !== filters.category) return false;
     return true;
   });
   return sortByStock(filtered);
+}
+
+export async function searchPartsAsync(options: PartSearchOptions = {}): Promise<PartSearchResult> {
+  const inventory = await getInventoryAsync();
+  const pageSize = options.pageSize ?? PARTS_PAGE_SIZE;
+  const page = Math.max(1, options.page ?? 1);
+  const filtered = filterParts(options, inventory).filter((part) =>
+    options.query ? matchesQuery(part, options.query) : true
+  );
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const start = (safePage - 1) * pageSize;
+
+  return {
+    parts: filtered.slice(start, start + pageSize),
+    total,
+    page: safePage,
+    pageSize,
+    totalPages,
+  };
+}
+
+export async function getFeaturedPartsAsync(): Promise<Part[]> {
+  const inventory = await getInventoryAsync();
+  const withExcelImage = inventory.filter(
+    (part) => hasInventoryImage(part) && part.category === "engine"
+  );
+  const featured = inventory.filter((part) => part.featured);
+  const seen = new Set<string>();
+  const combined: Part[] = [];
+
+  for (const part of [...withExcelImage, ...featured]) {
+    if (seen.has(part.id)) continue;
+    seen.add(part.id);
+    combined.push(part);
+  }
+
+  return sortByStock(combined).slice(0, 8);
+}
+
+export async function getPartsWithPhotosAsync(limit = 8): Promise<Part[]> {
+  const inventory = await getInventoryAsync();
+  return sortByStock(inventory.filter(hasInventoryImage)).slice(0, limit);
+}
+
+export async function getPartBySlugAsync(slug: string): Promise<Part | undefined> {
+  const inventory = await getInventoryAsync();
+  return inventory.find((part) => part.slug === slug);
 }
 
 export function getAllSlugs(): string[] {

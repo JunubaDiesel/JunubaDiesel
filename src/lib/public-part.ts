@@ -14,6 +14,12 @@ export interface PublicPart {
   yearRange?: string;
 }
 
+export interface PublicLookupResult {
+  found: boolean;
+  totalStock: number;
+  products: PublicPart[];
+}
+
 export function toPublicPart(part: Part): PublicPart {
   return {
     slug: part.slug,
@@ -30,7 +36,7 @@ export function toPublicPart(part: Part): PublicPart {
   };
 }
 
-export function toPublicLookupResult(result: InventoryLookupResult) {
+export function toPublicLookupResult(result: InventoryLookupResult): PublicLookupResult {
   return {
     found: result.found,
     totalStock: result.totalStock,

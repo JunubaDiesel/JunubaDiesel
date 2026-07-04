@@ -43,8 +43,8 @@ export function PartSearchBar() {
       </form>
       <p className="mt-3 text-sm text-muted">
         {ui.noOemCode}{" "}
-        <Link href="/catalog" className="font-medium text-accent hover:underline">
-          {ui.verDiagramaOem} →
+        <Link href="/contact" className="font-medium text-accent hover:underline">
+          {ui.solicitarConsulta} →
         </Link>
       </p>
     </div>

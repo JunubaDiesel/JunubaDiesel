@@ -2,13 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { adminFetch } from "@/lib/admin-fetch";
 import { useToast } from "@/context/ToastContext";
 
-interface AdminInsightsProps {
-  authHeader: string;
-}
-
-export function AdminInsights({ authHeader }: AdminInsightsProps) {
+export function AdminInsights() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [insights, setInsights] = useState<string | null>(null);
@@ -16,9 +13,7 @@ export function AdminInsights({ authHeader }: AdminInsightsProps) {
   const analyze = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/ai/insights", {
-        headers: { Authorization: authHeader },
-      });
+      const response = await adminFetch("/api/ai/insights");
       const data = await response.json();
       if (!response.ok) {
         showToast(data.error ?? "Error de análisis IA");

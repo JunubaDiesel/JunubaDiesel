@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ui, vehicleLabels, type VehicleId } from "@/config/site";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { adminFetch } from "@/lib/admin-fetch";
 import { resourceTypeLabels } from "@/lib/resource-labels";
 import type { Resource, ResourceType, ResourceVehicle } from "@/types/resource";
 
@@ -25,25 +25,16 @@ const emptyForm = (): Omit<Resource, "slug"> & { slug?: string } => ({
 });
 
 export function AdminResourcesClient() {
-  const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [form, setForm] = useState(emptyForm());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tagsInput, setTagsInput] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [loggingIn, setLoggingIn] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const authHeader = `Basic ${typeof window !== "undefined" ? btoa(`admin:${password}`) : ""}`;
-
   const loadResources = useCallback(async () => {
-    if (!authenticated) return;
     try {
-      const res = await fetch("/api/admin/resources", {
-        headers: { Authorization: authHeader },
-      });
+      const res = await adminFetch("/api/admin/resources");
       if (!res.ok) {
         setError("No autorizado");
         return;
@@ -53,7 +44,7 @@ export function AdminResourcesClient() {
     } catch {
       setError("Error al cargar recursos");
     }
-  }, [authenticated, authHeader]);
+  }, []);
 
   useEffect(() => {
     loadResources();
@@ -86,12 +77,9 @@ export function AdminResourcesClient() {
     };
 
     try {
-      const res = await fetch("/api/admin/resources", {
+      const res = await adminFetch("/api/admin/resources", {
         method: editingId ? "PUT" : "POST",
-        headers: {
-          Authorization: authHeader,
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
@@ -112,9 +100,8 @@ export function AdminResourcesClient() {
     if (!window.confirm("¿Eliminar este recurso?")) return;
     setSaving(true);
     try {
-      const res = await fetch(`/api/admin/resources?id=${encodeURIComponent(id)}`, {
+      const res = await adminFetch(`/api/admin/resources?id=${encodeURIComponent(id)}`, {
         method: "DELETE",
-        headers: { Authorization: authHeader },
       });
       if (!res.ok) {
         setError("Error al eliminar");
@@ -143,204 +130,172 @@ export function AdminResourcesClient() {
           </Link>
         </p>
 
-        {!authenticated ? (
-          <form
-            onSubmit={async (event) => {
-              event.preventDefault();
-              setLoggingIn(true);
-              setLoginError(null);
-              const ok = await verifyAdminPassword(password);
-              setLoggingIn(false);
-              if (ok) {
-                setAuthenticated(true);
-                return;
-              }
-              setLoginError("Contraseña incorrecta");
-            }}
-            className="glass-card max-w-md rounded-2xl p-6"
-          >
-            <label className="mb-2 block text-sm font-medium">{ui.adminPassword}</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="mb-4 w-full rounded-xl border border-border bg-surface-light px-4 py-3 text-sm"
-            />
-            {loginError && <p className="mb-3 text-sm text-red-400">{loginError}</p>}
-            <Button type="submit" disabled={loggingIn}>
-              {loggingIn ? "Verificando…" : ui.adminLogin}
-            </Button>
-          </form>
-        ) : (
-          <>
-            {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
+        {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
 
-            <form onSubmit={handleSubmit} className="glass-card mb-10 rounded-2xl p-6">
-              <h2 className="mb-4 text-lg font-bold">
-                {editingId ? "Editar recurso" : "Nuevo recurso"}
-              </h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-sm">Título</label>
-                  <input
-                    required
-                    value={form.title}
-                    onChange={(event) => setForm({ ...form, title: event.target.value })}
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-sm">Descripción</label>
-                  <textarea
-                    required
-                    rows={3}
-                    value={form.description}
-                    onChange={(event) => setForm({ ...form, description: event.target.value })}
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm">Tipo</label>
-                  <select
-                    value={form.type}
-                    onChange={(event) =>
-                      setForm({ ...form, type: event.target.value as ResourceType })
-                    }
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  >
-                    {(Object.keys(resourceTypeLabels) as ResourceType[]).map((type) => (
-                      <option key={type} value={type}>
-                        {resourceTypeLabels[type]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm">Vehículo</label>
-                  <select
-                    value={form.vehicle}
-                    onChange={(event) =>
-                      setForm({ ...form, vehicle: event.target.value as ResourceVehicle })
-                    }
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  >
-                    <option value="all">General</option>
-                    {(Object.keys(vehicleLabels) as VehicleId[]).map((id) => (
-                      <option key={id} value={id}>
-                        {vehicleLabels[id]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-sm">URL</label>
-                  <input
-                    required
-                    value={form.url}
-                    onChange={(event) => setForm({ ...form, url: event.target.value })}
-                    placeholder="https://youtube.com/... o /recursos/slug"
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm">YouTube ID (opcional)</label>
-                  <input
-                    value={form.youtubeId ?? ""}
-                    onChange={(event) => setForm({ ...form, youtubeId: event.target.value })}
-                    placeholder="dQw4w9WgXcQ"
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm">Video URL (opcional)</label>
-                  <input
-                    value={form.videoSrc ?? ""}
-                    onChange={(event) => setForm({ ...form, videoSrc: event.target.value })}
-                    placeholder="/videos/delga/xxx.mp4 o Blob URL"
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm">Poster URL (opcional)</label>
-                  <input
-                    value={form.posterSrc ?? ""}
-                    onChange={(event) => setForm({ ...form, posterSrc: event.target.value })}
-                    placeholder="/videos/delga/xxx.jpg"
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-sm">Fuente YouTube (opcional)</label>
-                  <input
-                    value={form.sourceUrl ?? ""}
-                    onChange={(event) => setForm({ ...form, sourceUrl: event.target.value })}
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm">Tags (coma)</label>
-                  <input
-                    value={tagsInput}
-                    onChange={(event) => setTagsInput(event.target.value)}
-                    className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
-                  />
-                </div>
-                <div className="flex items-center gap-2 sm:col-span-2">
-                  <input
-                    id="featured"
-                    type="checkbox"
-                    checked={form.featured ?? false}
-                    onChange={(event) => setForm({ ...form, featured: event.target.checked })}
-                  />
-                  <label htmlFor="featured" className="text-sm">
-                    Destacado en landing
-                  </label>
-                </div>
-              </div>
-              <div className="mt-6 flex gap-3">
-                <Button type="submit" disabled={saving}>
-                  {editingId ? "Actualizar" : "Crear"}
-                </Button>
-                {editingId && (
-                  <Button type="button" variant="outline" onClick={resetForm}>
-                    Cancelar
-                  </Button>
-                )}
-              </div>
-            </form>
-
-            <div className="space-y-3">
-              {resources.map((resource) => (
-                <div
-                  key={resource.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-light p-4 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <p className="font-semibold">{resource.title}</p>
-                    <p className="text-xs text-muted">
-                      {resourceTypeLabels[resource.type]} · {resource.slug}
-                      {resource.featured && " · Destacado"}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button type="button" size="sm" variant="outline" onClick={() => handleEdit(resource)}>
-                      Editar
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => handleDelete(resource.id)}
-                    >
-                      {ui.remove}
-                    </Button>
-                  </div>
-                </div>
-              ))}
+        <form onSubmit={handleSubmit} className="glass-card mb-10 rounded-2xl p-6">
+          <h2 className="mb-4 text-lg font-bold">
+            {editingId ? "Editar recurso" : "Nuevo recurso"}
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm">Título</label>
+              <input
+                required
+                value={form.title}
+                onChange={(event) => setForm({ ...form, title: event.target.value })}
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
             </div>
-          </>
-        )}
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm">Descripción</label>
+              <textarea
+                required
+                rows={3}
+                value={form.description}
+                onChange={(event) => setForm({ ...form, description: event.target.value })}
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm">Tipo</label>
+              <select
+                value={form.type}
+                onChange={(event) =>
+                  setForm({ ...form, type: event.target.value as ResourceType })
+                }
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              >
+                {(Object.keys(resourceTypeLabels) as ResourceType[]).map((type) => (
+                  <option key={type} value={type}>
+                    {resourceTypeLabels[type]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm">Vehículo</label>
+              <select
+                value={form.vehicle}
+                onChange={(event) =>
+                  setForm({ ...form, vehicle: event.target.value as ResourceVehicle })
+                }
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              >
+                <option value="all">General</option>
+                {(Object.keys(vehicleLabels) as VehicleId[]).map((id) => (
+                  <option key={id} value={id}>
+                    {vehicleLabels[id]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm">URL</label>
+              <input
+                required
+                value={form.url}
+                onChange={(event) => setForm({ ...form, url: event.target.value })}
+                placeholder="https://youtube.com/... o /recursos/slug"
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm">YouTube ID (opcional)</label>
+              <input
+                value={form.youtubeId ?? ""}
+                onChange={(event) => setForm({ ...form, youtubeId: event.target.value })}
+                placeholder="dQw4w9WgXcQ"
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm">Video URL (opcional)</label>
+              <input
+                value={form.videoSrc ?? ""}
+                onChange={(event) => setForm({ ...form, videoSrc: event.target.value })}
+                placeholder="/videos/delga/xxx.mp4 o Blob URL"
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm">Poster URL (opcional)</label>
+              <input
+                value={form.posterSrc ?? ""}
+                onChange={(event) => setForm({ ...form, posterSrc: event.target.value })}
+                placeholder="/videos/delga/xxx.jpg"
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm">Fuente YouTube (opcional)</label>
+              <input
+                value={form.sourceUrl ?? ""}
+                onChange={(event) => setForm({ ...form, sourceUrl: event.target.value })}
+                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm">Tags (coma)</label>
+              <input
+                value={tagsInput}
+                onChange={(event) => setTagsInput(event.target.value)}
+                className="w-full rounded-xl border border-border bg-surface-light px-4 py-2.5 text-sm"
+              />
+            </div>
+            <div className="flex items-center gap-2 sm:col-span-2">
+              <input
+                id="featured"
+                type="checkbox"
+                checked={form.featured ?? false}
+                onChange={(event) => setForm({ ...form, featured: event.target.checked })}
+              />
+              <label htmlFor="featured" className="text-sm">
+                Destacado en landing
+              </label>
+            </div>
+          </div>
+          <div className="mt-6 flex gap-3">
+            <Button type="submit" disabled={saving}>
+              {editingId ? "Actualizar" : "Crear"}
+            </Button>
+            {editingId && (
+              <Button type="button" variant="outline" onClick={resetForm}>
+                Cancelar
+              </Button>
+            )}
+          </div>
+        </form>
+
+        <div className="space-y-3">
+          {resources.map((resource) => (
+            <div
+              key={resource.id}
+              className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-light p-4 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <p className="font-semibold">{resource.title}</p>
+                <p className="text-xs text-muted">
+                  {resourceTypeLabels[resource.type]} · {resource.slug}
+                  {resource.featured && " · Destacado"}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button type="button" size="sm" variant="outline" onClick={() => handleEdit(resource)}>
+                  Editar
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => handleDelete(resource.id)}
+                >
+                  {ui.remove}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

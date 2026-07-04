@@ -10,10 +10,20 @@ interface ToolPart {
   state?: string;
   input?: unknown;
   output?: unknown;
+  errorText?: string;
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" ? (value as Record<string, unknown>) : null;
+}
+
+function resolveToolName(part: ToolPart): string {
+  if (part.toolName) return part.toolName;
+  if (part.type === "dynamic-tool") return part.toolName ?? "herramienta";
+  if (part.type.startsWith("tool-") && part.type !== "tool-invocation") {
+    return part.type.slice(5);
+  }
+  return "herramienta";
 }
 
 function StockCard({ part }: { part: Record<string, unknown> }) {
@@ -42,13 +52,32 @@ function StockCard({ part }: { part: Record<string, unknown> }) {
 }
 
 function ToolResultBlock({ part }: { part: ToolPart }) {
-  const output = asRecord(part.output);
-  const toolName = part.toolName ?? part.type.replace(/^tool-/, "");
+  const toolName = resolveToolName(part);
+  const state = part.state;
 
-  if (part.state === "input-streaming" || part.state === "input-available") {
+  if (
+    state === "input-streaming" ||
+    state === "input-available" ||
+    state === "approval-requested" ||
+    state === "approval-responded"
+  ) {
     return <p className="text-xs italic text-muted">Consultando {toolName}…</p>;
   }
 
+  if (state === "output-error" || state === "output-denied") {
+    return (
+      <p className="text-xs text-red-400">
+        Error en {toolName}
+        {part.errorText ? `: ${part.errorText}` : ""}
+      </p>
+    );
+  }
+
+  if (state !== "output-available" && state !== undefined && part.type !== "tool-invocation") {
+    return null;
+  }
+
+  const output = asRecord(part.output);
   if (!output) return null;
 
   if (toolName === "searchParts" || toolName === "lookupOem") {
@@ -124,6 +153,14 @@ function ToolResultBlock({ part }: { part: ToolPart }) {
   return null;
 }
 
+function isToolPart(part: ToolPart): boolean {
+  return (
+    part.type === "tool-invocation" ||
+    part.type === "dynamic-tool" ||
+    (part.type.startsWith("tool-") && part.type !== "tool-input-start")
+  );
+}
+
 export function ChatToolParts({ parts }: { parts: ToolPart[] }) {
   return (
     <>
@@ -135,7 +172,7 @@ export function ChatToolParts({ parts }: { parts: ToolPart[] }) {
             </p>
           );
         }
-        if (part.type === "tool-invocation" || part.type.startsWith("tool-")) {
+        if (isToolPart(part)) {
           return (
             <div key={part.toolCallId ?? index} className="mt-2 border-t border-border/40 pt-2">
               <ToolResultBlock part={part} />

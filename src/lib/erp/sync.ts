@@ -1,16 +1,14 @@
 import fs from "fs";
-import path from "path";
 import { parse } from "csv-parse/sync";
 import partsSeed from "@/data/parts.json";
-import { inventoryPaths } from "@/config/erp-mapping";
 import type { InventoryMeta, Part, SyncResult } from "@/types/part";
 import { mapCsvRowToPart, mergePartWithExisting } from "@/lib/erp/map";
 import { computeStockStatus } from "@/lib/erp/stock";
 import {
-  ensureDataDir,
   indexExisting,
   inventoryFilePath,
   metaFilePath,
+  writeInventoryProductsAsync,
 } from "@/lib/erp/sync-utils";
 
 function enrichSeedPart(part: Part): Part {
@@ -70,24 +68,7 @@ export function readInventoryMeta(): InventoryMeta {
   };
 }
 
-function writeInventory(
-  products: Part[],
-  syncedAt: string,
-  source: InventoryMeta["source"]
-): void {
-  ensureDataDir();
-  fs.writeFileSync(inventoryFilePath(), JSON.stringify(products, null, 2), "utf-8");
-
-  const meta: InventoryMeta = {
-    syncedAt,
-    source,
-    totalProducts: products.length,
-    inStockCount: products.filter((p) => (p.stockQty ?? 0) > 0).length,
-  };
-  fs.writeFileSync(metaFilePath(), JSON.stringify(meta, null, 2), "utf-8");
-}
-
-export function syncInventoryFromCsv(csvContent: string): SyncResult {
+export async function syncInventoryFromCsv(csvContent: string): Promise<SyncResult> {
   const syncedAt = new Date().toISOString();
   const errors: string[] = [];
   let added = 0;
@@ -143,7 +124,7 @@ export function syncInventoryFromCsv(csvContent: string): SyncResult {
     a.name.localeCompare(b.name, "es")
   );
 
-  writeInventory(products, syncedAt, "erp");
+  await writeInventoryProductsAsync(products, syncedAt, "erp");
 
   return {
     syncedAt,

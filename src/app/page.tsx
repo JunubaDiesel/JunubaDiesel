@@ -10,9 +10,9 @@ import { VehicleGrid } from "@/components/landing/VehicleGrid";
 import { WhyJunuba } from "@/components/landing/WhyJunuba";
 import { ResourcesShowcase } from "@/components/resources/ResourcesSection";
 import { siteConfig } from "@/config/site";
-import { getInventoryStats } from "@/lib/inventory";
-import { getFeaturedParts, getPartsWithPhotos } from "@/lib/parts";
-import { getFeaturedResources } from "@/lib/resources";
+import { getInventoryStatsAsync } from "@/lib/inventory";
+import { getFeaturedPartsAsync, getPartsWithPhotosAsync } from "@/lib/parts";
+import { getFeaturedResourcesAsync } from "@/lib/resources";
 
 export const metadata: Metadata = {
   title: `${siteConfig.displayName} | Repuestos comerciales en República Dominicana`,
@@ -25,11 +25,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
-  const stats = getInventoryStats();
-  const featured = getFeaturedParts();
-  const photoParts = getPartsWithPhotos(8);
-  const featuredResources = getFeaturedResources(6);
+export default async function HomePage() {
+  const stats = await getInventoryStatsAsync();
+  const featured = await getFeaturedPartsAsync();
+  const photoParts = await getPartsWithPhotosAsync(8);
+  const featuredResources = await getFeaturedResourcesAsync(6);
 
   return (
     <>

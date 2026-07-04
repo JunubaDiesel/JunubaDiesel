@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ResourcesFilter, ResourcesList } from "@/components/resources/ResourcesSection";
 import { ui } from "@/config/site";
-import { filterResources, parseResourceFilters } from "@/lib/resources";
+import { filterResourcesAsync, parseResourceFilters } from "@/lib/resources";
 
 export const metadata: Metadata = {
   title: ui.recursosTitle,
@@ -15,7 +15,7 @@ interface RecursosPageProps {
 export default async function RecursosPage({ searchParams }: RecursosPageProps) {
   const params = await searchParams;
   const filters = parseResourceFilters(params);
-  const resources = filterResources(filters);
+  const resources = await filterResourcesAsync(filters);
 
   return (
     <div className="gradient-mesh pt-24 pb-20">

@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import resourcesSeed from "@/data/resources.json";
 import { resourceTypeLabels } from "@/lib/resource-labels";
+import { loadResourcesFromBlob, persistResourcesSnapshot } from "@/lib/storage/persist";
 import type { Resource, ResourceFilters, ResourceType } from "@/types/resource";
 import type { VehicleId } from "@/config/site";
 
@@ -22,18 +23,43 @@ export function loadResources(): Resource[] {
   return readResourcesFile() ?? (resourcesSeed as Resource[]);
 }
 
+export async function loadResourcesAsync(): Promise<Resource[]> {
+  const fromBlob = await loadResourcesFromBlob();
+  if (fromBlob?.length) return fromBlob;
+  return loadResources();
+}
+
 export function writeResources(resources: Resource[]): void {
   const dir = path.dirname(RESOURCES_FILE);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(RESOURCES_FILE, JSON.stringify(resources, null, 2), "utf-8");
 }
 
+export async function writeResourcesAsync(resources: Resource[]): Promise<void> {
+  try {
+    writeResources(resources);
+  } catch {
+    // Vercel read-only filesystem — Blob is the source of truth in production
+  }
+  await persistResourcesSnapshot(resources);
+}
+
 export function getResourceBySlug(slug: string): Resource | undefined {
   return loadResources().find((resource) => resource.slug === slug);
 }
 
+export async function getResourceBySlugAsync(slug: string): Promise<Resource | undefined> {
+  const resources = await loadResourcesAsync();
+  return resources.find((resource) => resource.slug === slug);
+}
+
 export function getAllResourceSlugs(): string[] {
   return loadResources().map((resource) => resource.slug);
+}
+
+export async function getAllResourceSlugsAsync(): Promise<string[]> {
+  const resources = await loadResourcesAsync();
+  return resources.map((resource) => resource.slug);
 }
 
 export function getFeaturedResources(limit = 6): Resource[] {
@@ -43,10 +69,27 @@ export function getFeaturedResources(limit = 6): Resource[] {
     .slice(0, limit);
 }
 
+export async function getFeaturedResourcesAsync(limit = 6): Promise<Resource[]> {
+  const resources = await loadResourcesAsync();
+  return resources
+    .filter((resource) => resource.featured)
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+    .slice(0, limit);
+}
+
 export function filterResources(filters: ResourceFilters = {}): Resource[] {
+  return filterResourcesList(loadResources(), filters);
+}
+
+export async function filterResourcesAsync(filters: ResourceFilters = {}): Promise<Resource[]> {
+  const resources = await loadResourcesAsync();
+  return filterResourcesList(resources, filters);
+}
+
+function filterResourcesList(resources: Resource[], filters: ResourceFilters = {}): Resource[] {
   const query = filters.query?.trim().toLowerCase();
 
-  return loadResources()
+  return resources
     .filter((resource) => {
       if (filters.type && resource.type !== filters.type) return false;
       if (filters.vehicle === "all" && resource.vehicle !== "all") return false;
@@ -102,4 +145,8 @@ export function parseResourceFilters(
     vehicle: get("vehicle") as ResourceFilters["vehicle"],
     query: get("q"),
   };
+}
+
+export function getResourceTypeLabel(type: ResourceType): string {
+  return resourceTypeLabels[type] ?? type;
 }

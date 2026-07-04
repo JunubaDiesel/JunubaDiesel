@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ReviewListBadgeButton } from "@/components/catalog/ReviewListItem";
 import { GlobalSearchOverlay, MobileSearchButton } from "@/components/layout/GlobalSearchOverlay";
 import { Logo } from "@/components/layout/Logo";
 import { NavLink } from "@/components/layout/NavLink";
@@ -21,7 +20,6 @@ export function Header() {
         <div className="flex items-center gap-3">
           <GlobalSearchOverlay />
           <MobileSearchButton />
-          <ReviewListBadgeButton />
           <nav className="hidden items-center gap-6 lg:flex">
             {navLinks.map((link) => (
               <NavLink

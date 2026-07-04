@@ -6,7 +6,7 @@ import { checkRateLimit } from "@/lib/rate-limit";
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
-  const limited = checkRateLimit(request, {
+  const limited = await checkRateLimit(request, {
     prefix: "inventory-lookup",
     limit: 60,
     windowMs: 60_000,

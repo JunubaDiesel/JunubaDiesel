@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { InventoryMatch } from "@/components/catalog/InventoryMatch";
 import { ui } from "@/config/site";
+import { buildContactUrl } from "@/lib/contact-url";
 import { looksLikeOemCode } from "@/lib/oem-detect";
 
 export function GlobalSearchOverlay() {
@@ -30,17 +31,12 @@ export function GlobalSearchOverlay() {
 
   const buildBuscarUrl = () => {
     const params = new URLSearchParams();
-    params.set("tab", "stock");
     if (isOem) params.set("oem", trimmed);
     else params.set("q", trimmed);
     return `/buscar?${params.toString()}`;
   };
 
-  const buildDiagramaUrl = () => {
-    const params = new URLSearchParams({ tab: "diagrama" });
-    if (trimmed) params.set("oem", trimmed);
-    return `/buscar?${params.toString()}`;
-  };
+  const contactHref = buildContactUrl({ oem: isOem ? trimmed : undefined });
 
   if (!open) {
     return (
@@ -95,14 +91,14 @@ export function GlobalSearchOverlay() {
                 {ui.stockJUNUBA}
               </Link>
               <Link
-                href={buildDiagramaUrl()}
+                href={contactHref}
                 onClick={() => {
                   setOpen(false);
                   setQuery("");
                 }}
                 className="rounded-lg border border-accent/40 px-4 py-2 text-sm font-semibold text-accent"
               >
-                {ui.verDiagramaOem}
+                {ui.solicitarConsulta}
               </Link>
             </div>
           </div>

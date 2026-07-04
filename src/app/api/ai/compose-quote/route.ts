@@ -20,7 +20,7 @@ const payloadSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const limited = checkRateLimit(request, {
+  const limited = await checkRateLimit(request, {
     prefix: "ai-compose",
     limit: 15,
     windowMs: 60 * 60_000,

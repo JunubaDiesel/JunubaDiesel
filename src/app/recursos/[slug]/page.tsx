@@ -5,7 +5,7 @@ import { ArticleJsonLd } from "@/components/seo/ArticleJsonLd";
 import { VideoPlayer } from "@/components/resources/VideoPlayer";
 import { Button } from "@/components/ui/Button";
 import { siteConfig, ui, vehicleLabels } from "@/config/site";
-import { getAllResourceSlugs, getResourceBySlug } from "@/lib/resources";
+import { getAllResourceSlugs, getResourceBySlugAsync } from "@/lib/resources";
 import { resourceTypeLabels } from "@/lib/resource-labels";
 
 interface RecursoDetailPageProps {
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: RecursoDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const resource = getResourceBySlug(slug);
+  const resource = await getResourceBySlugAsync(slug);
   if (!resource) return { title: "Recurso no encontrado" };
 
   return {
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: RecursoDetailPageProps): Prom
 
 export default async function RecursoDetailPage({ params }: RecursoDetailPageProps) {
   const { slug } = await params;
-  const resource = getResourceBySlug(slug);
+  const resource = await getResourceBySlugAsync(slug);
   if (!resource) notFound();
 
   const vehicleLabel =
@@ -98,8 +98,8 @@ export default async function RecursoDetailPage({ params }: RecursoDetailPagePro
             <Button href="/parts" variant="outline">
               {ui.viewParts}
             </Button>
-            <Button href="/catalog" variant="secondary">
-              {ui.diagramaOem}
+            <Button href="/contact" variant="secondary">
+              {ui.consultarRepuesto}
             </Button>
           </div>
         </div>

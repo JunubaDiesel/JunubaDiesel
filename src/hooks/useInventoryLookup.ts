@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { InventoryLookupResult } from "@/types/part";
+import type { PublicLookupResult } from "@/lib/public-part";
 
 export function useInventoryLookup(oemNumber?: string) {
-  const [result, setResult] = useState<InventoryLookupResult | null>(null);
+  const [result, setResult] = useState<PublicLookupResult | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export function useInventoryLookup(oemNumber?: string) {
 
     fetch(`/api/inventory/lookup?oem=${encodeURIComponent(trimmed)}`)
       .then((res) => res.json())
-      .then((data: InventoryLookupResult) => {
+      .then((data: PublicLookupResult) => {
         if (!cancelled) setResult(data);
       })
       .catch(() => {

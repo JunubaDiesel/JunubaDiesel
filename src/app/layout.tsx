@@ -23,7 +23,6 @@ export const metadata: Metadata = {
     "repuestos Kia Bongo",
     "motor usado",
     "repuestos comerciales",
-    "catálogo OEM Partsouq",
   ],
   openGraph: {
     title: `${siteConfig.displayName} - ${siteConfig.tagline}`,

@@ -16,7 +16,7 @@ interface ContactPayload {
 const MAX_FIELD_LENGTH = 2000;
 
 export async function POST(request: NextRequest) {
-  const limited = checkRateLimit(request, {
+  const limited = await checkRateLimit(request, {
     prefix: "contact",
     limit: 5,
     windowMs: 15 * 60_000,

@@ -8,7 +8,18 @@ export const metadata: Metadata = {
   description: "Solicite cotización de repuestos para Starex, Staria, Porter y Bongo",
 };
 
-export default function ContactPage() {
+interface ContactPageProps {
+  searchParams: Promise<{
+    vehicle?: string;
+    category?: string;
+    oem?: string;
+    message?: string;
+  }>;
+}
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const params = await searchParams;
+
   return (
     <div className="gradient-mesh pt-24 pb-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -24,7 +35,14 @@ export default function ContactPage() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <ContactForm />
+          <ContactForm
+            prefill={{
+              vehicle: params.vehicle,
+              category: params.category,
+              oem: params.oem,
+              message: params.message,
+            }}
+          />
 
           <aside className="glass-card space-y-4 rounded-2xl p-6 text-sm text-muted">
             <h2 className="text-lg font-bold text-foreground">Información directa</h2>
@@ -40,10 +58,14 @@ export default function ContactPage() {
               ))}
             </p>
             <p>
-              Correo:{" "}
-              <a href={`mailto:${siteConfig.email}`} className="text-accent hover:underline">
-                {siteConfig.email}
-              </a>
+              Correo:
+              {siteConfig.emails.map((address) => (
+                <span key={address} className="block">
+                  <a href={`mailto:${address}`} className="text-accent hover:underline">
+                    {address}
+                  </a>
+                </span>
+              ))}
             </p>
             <p>Horario: {siteConfig.hours}</p>
             <p>Dirección: {siteConfig.address}</p>

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { PartsGrid } from "@/components/parts/PartsGrid";
 import { PageRoleBanner } from "@/components/ui/PageRoleBanner";
 import { ui } from "@/config/site";
-import { parseSearchOptionsFromParams, searchParts } from "@/lib/parts";
+import { parseSearchOptionsFromParams, searchPartsAsync } from "@/lib/parts";
 
 export const metadata: Metadata = {
   title: ui.partsInStock,
@@ -18,7 +18,7 @@ interface PartsPageProps {
 export default async function PartsPage({ searchParams }: PartsPageProps) {
   const params = await searchParams;
   const options = parseSearchOptionsFromParams(params);
-  const result = searchParts(options);
+  const result = await searchPartsAsync(options);
 
   return (
     <div className="gradient-mesh pt-24 pb-20">
@@ -48,8 +48,8 @@ export default async function PartsPage({ searchParams }: PartsPageProps) {
 
         <p className="mt-10 text-center text-sm text-muted">
           {ui.noOemCode}{" "}
-          <Link href="/catalog" className="font-semibold text-accent hover:underline">
-            {ui.verDiagramaOem} →
+          <Link href="/contact" className="font-semibold text-accent hover:underline">
+            {ui.solicitarConsulta} →
           </Link>
         </p>
       </div>

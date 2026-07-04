@@ -7,7 +7,7 @@ const csp = [
   "img-src 'self' data: blob: https://images.unsplash.com https://img.youtube.com https://*.public.blob.vercel-storage.com",
   "font-src 'self'",
   "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
-  "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://partsouq.com https://*.partsouq.com",
+  "frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -30,6 +30,21 @@ const nextConfig: NextConfig = {
         hostname: "*.public.blob.vercel-storage.com",
       },
     ],
+  },
+  async redirects() {
+    return [
+      { source: "/catalog", destination: "/contact", permanent: true },
+      { source: "/catalog/starex", destination: "/contact?vehicle=starex", permanent: true },
+      { source: "/catalog/staria", destination: "/contact?vehicle=staria", permanent: true },
+      { source: "/catalog/porter", destination: "/contact?vehicle=porter", permanent: true },
+      { source: "/catalog/bongo", destination: "/contact?vehicle=bongo", permanent: true },
+      {
+        source: "/buscar",
+        has: [{ type: "query", key: "tab", value: "diagrama" }],
+        destination: "/contact",
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

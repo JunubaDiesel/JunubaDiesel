@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
-  const limited = checkRateLimit(request, {
+  const limited = await checkRateLimit(request, {
     prefix: "ai-chat",
     limit: 20,
     windowMs: 60 * 60_000,

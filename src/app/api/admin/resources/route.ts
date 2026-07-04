@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAuthorizedSyncRequest } from "@/lib/erp/auth";
 import {
-  loadResources,
+  loadResourcesAsync,
   slugifyResource,
-  writeResources,
+  writeResourcesAsync,
 } from "@/lib/resources";
 import type { Resource } from "@/types/resource";
 
@@ -17,11 +18,16 @@ function generateId(): string {
   return `res-${Date.now().toString(36)}`;
 }
 
+function revalidateResources() {
+  revalidatePath("/");
+  revalidatePath("/recursos");
+}
+
 export async function GET(request: NextRequest) {
   if (!isAuthorizedSyncRequest(request.headers, process.env.ADMIN_PASSWORD)) {
     return unauthorized();
   }
-  return NextResponse.json(loadResources());
+  return NextResponse.json(await loadResourcesAsync());
 }
 
 export async function POST(request: NextRequest) {
@@ -54,9 +60,10 @@ export async function POST(request: NextRequest) {
     featured: body.featured ?? false,
   };
 
-  const resources = loadResources();
+  const resources = await loadResourcesAsync();
   resources.unshift(resource);
-  writeResources(resources);
+  await writeResourcesAsync(resources);
+  revalidateResources();
   return NextResponse.json(resource, { status: 201 });
 }
 
@@ -70,7 +77,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "ID requerido" }, { status: 400 });
   }
 
-  const resources = loadResources();
+  const resources = await loadResourcesAsync();
   const index = resources.findIndex((item) => item.id === body.id);
   if (index === -1) {
     return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404 });
@@ -97,7 +104,8 @@ export async function PUT(request: NextRequest) {
   };
 
   resources[index] = updated;
-  writeResources(resources);
+  await writeResourcesAsync(resources);
+  revalidateResources();
   return NextResponse.json(updated);
 }
 
@@ -111,12 +119,13 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "ID requerido" }, { status: 400 });
   }
 
-  const resources = loadResources();
+  const resources = await loadResourcesAsync();
   const next = resources.filter((item) => item.id !== id);
   if (next.length === resources.length) {
     return NextResponse.json({ error: "Recurso no encontrado" }, { status: 404 });
   }
 
-  writeResources(next);
+  await writeResourcesAsync(next);
+  revalidateResources();
   return NextResponse.json({ ok: true });
 }

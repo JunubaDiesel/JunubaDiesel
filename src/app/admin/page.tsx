@@ -24,6 +24,15 @@ export default function AdminHomePage() {
             </p>
           </Link>
           <Link
+            href="/admin/oem-guides"
+            className="glass-card rounded-2xl p-6 transition hover:border-accent/30"
+          >
+            <h2 className="text-xl font-bold">Guías OEM</h2>
+            <p className="mt-2 text-sm text-muted">
+              Gestionar piezas OEM frecuentes mostradas en la página de inicio y enlaces de consulta.
+            </p>
+          </Link>
+          <Link
             href="/admin/resources"
             className="glass-card rounded-2xl p-6 transition hover:border-accent/30"
           >
@@ -32,6 +41,13 @@ export default function AdminHomePage() {
               Gestionar guías, videos de YouTube y artículos en /recursos.
             </p>
           </Link>
+          <div className="glass-card rounded-2xl p-6">
+            <h2 className="text-xl font-bold">Guía de operación</h2>
+            <p className="mt-2 text-sm text-muted">
+              Stock, videos y landing: ver docs/content-operations.md. En producción configure
+              BLOB_READ_WRITE_TOKEN para que Admin persista sin redeploy.
+            </p>
+          </div>
           <div className="glass-card rounded-2xl p-6">
             <h2 className="text-xl font-bold">Sincronizar videos Delga</h2>
             <p className="mt-2 text-sm text-muted">

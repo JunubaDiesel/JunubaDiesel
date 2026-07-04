@@ -41,7 +41,7 @@ BLOB_READ_WRITE_TOKEN=   # Si está definido, sube mp4/jpg a Vercel Blob
 | Posters | `public/videos/delga/{videoId}.jpg` |
 | Metadatos Recursos | `src/data/resources.json` |
 
-Los archivos en `public/videos/` y `temp/` están en `.gitignore`. Para producción en Vercel, use `BLOB_READ_WRITE_TOKEN` o suba los archivos manualmente.
+Los archivos en `public/videos/` y `temp/` están en `.gitignore`. En producción, configure `BLOB_READ_WRITE_TOKEN` para que Admin y sync persistan datos. Ver [`content-operations.md`](./content-operations.md).
 
 ## Despliegue en Vercel Blob (producción)
 

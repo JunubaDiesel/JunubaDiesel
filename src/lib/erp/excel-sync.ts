@@ -14,11 +14,13 @@ import { loadInventory } from "@/lib/erp/sync";
 import {
   indexExisting,
   upsertPartInMaps,
-  writeInventoryProducts,
+  writeInventoryProductsAsync,
 } from "@/lib/erp/sync-utils";
 import type { Part, SyncResult } from "@/types/part";
 
 export type ExcelFormat = "stock" | "catalog" | "unknown";
+
+import { uploadInventoryImage } from "@/lib/storage/blob-images";
 
 function inventoryImagesRoot(): string {
   return path.join(process.cwd(), excelInventoryImageDir);
@@ -32,7 +34,10 @@ function clearInventoryImages(): void {
   fs.mkdirSync(root, { recursive: true });
 }
 
-function savePartImage(slug: string, buffer: Buffer, ext: string): string {
+async function savePartImage(slug: string, buffer: Buffer, ext: string): Promise<string> {
+  const blobUrl = await uploadInventoryImage(slug, buffer, ext);
+  if (blobUrl) return blobUrl;
+
   const safeSlug = slug.replace(/[^a-z0-9-]/gi, "-");
   const dir = path.join(inventoryImagesRoot(), safeSlug);
   fs.mkdirSync(dir, { recursive: true });
@@ -87,18 +92,19 @@ export function detectExcelFormat(workbook: ExcelJS.Workbook): ExcelFormat {
   return "unknown";
 }
 
-function parseSheet(
+async function parseSheet(
   worksheet: ExcelJS.Worksheet,
   sheetConfig: ExcelSheetConfig,
   rowImages: Map<number, { buffer: Buffer; ext: string }>,
   existingByErpId: Map<string, Part>,
   errors: string[]
-): { parts: Part[]; count: number } {
+): Promise<{ parts: Part[]; count: number }> {
   const parts: Part[] = [];
   let count = 0;
 
-  worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-    if (rowNumber < sheetConfig.dataStartRow) return;
+  for (let rowNumber = sheetConfig.dataStartRow; rowNumber <= worksheet.rowCount; rowNumber += 1) {
+    const row = worksheet.getRow(rowNumber);
+    if (!row.hasValues) continue;
 
     const rowValues = row.values as unknown[];
     const existing = existingByErpId.get(
@@ -115,14 +121,14 @@ function parseSheet(
 
     if (error) {
       errors.push(`${sheetConfig.sheetName} fila ${rowNumber}: ${error}`);
-      return;
+      continue;
     }
-    if (!part) return;
+    if (!part) continue;
 
     const imageData = rowImages.get(rowNumber);
     if (imageData) {
       try {
-        const imagePath = savePartImage(part.slug, imageData.buffer, imageData.ext);
+        const imagePath = await savePartImage(part.slug, imageData.buffer, imageData.ext);
         part.images = [imagePath];
         part.featured = true;
       } catch (err) {
@@ -134,7 +140,7 @@ function parseSheet(
 
     parts.push(part);
     count += 1;
-  });
+  }
 
   return { parts, count };
 }
@@ -180,7 +186,7 @@ export async function syncInventoryFromCatalogExcel(buffer: Buffer): Promise<Syn
     const rowImages = buildRowImageMap(worksheet, workbook);
     imagesExtracted += rowImages.size;
 
-    const { parts, count } = parseSheet(
+    const { parts, count } = await parseSheet(
       worksheet,
       sheetConfig,
       rowImages,
@@ -202,7 +208,7 @@ export async function syncInventoryFromCatalogExcel(buffer: Buffer): Promise<Syn
   if (products.length === 0 || Object.values(sheetsProcessed).every((count) => count === 0)) {
     errors.push("No se encontraron productos en las hojas configuradas.");
   } else {
-    writeInventoryProducts(products, syncedAt, "excel");
+    await writeInventoryProductsAsync(products, syncedAt, "excel");
   }
 
   return {

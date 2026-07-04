@@ -46,10 +46,10 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/catalog"
+                  href="/contact"
                   className="text-sm text-muted transition-colors hover:text-accent"
                 >
-                  {ui.catalogOem}
+                  {ui.consultarRepuesto}
                 </Link>
               </li>
             </ul>
@@ -80,6 +80,16 @@ export function Footer() {
                 {siteConfig.phones.map((phone) => (
                   <span key={phone} className="block">
                     {phone}
+                  </span>
+                ))}
+              </li>
+              <li>
+                Correo:
+                {siteConfig.emails.map((address) => (
+                  <span key={address} className="block">
+                    <a href={`mailto:${address}`} className="hover:text-accent">
+                      {address}
+                    </a>
                   </span>
                 ))}
               </li>

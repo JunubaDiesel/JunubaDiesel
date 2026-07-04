@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AdminInsights } from "@/components/admin/AdminInsights";
 import { Button } from "@/components/ui/Button";
 import { ui } from "@/config/site";
-import { verifyAdminPassword } from "@/lib/admin-auth";
+import { adminFetch } from "@/lib/admin-fetch";
 import type { SyncResult } from "@/types/part";
 
 interface InventoryMetaResponse {
@@ -15,21 +15,15 @@ interface InventoryMetaResponse {
 }
 
 export function AdminSyncClient() {
-  const [password, setPassword] = useState("");
-  const [authenticated, setAuthenticated] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<SyncResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loginError, setLoginError] = useState<string | null>(null);
-  const [loggingIn, setLoggingIn] = useState(false);
   const [meta, setMeta] = useState<InventoryMetaResponse | null>(null);
-
-  const authHeader = `Basic ${typeof window !== "undefined" ? btoa(`admin:${password}`) : ""}`;
 
   const loadMeta = useCallback(async () => {
     try {
-      const res = await fetch("/api/inventory/stats");
+      const res = await adminFetch("/api/inventory/stats");
       if (res.ok) setMeta(await res.json());
     } catch {
       // ignore
@@ -40,19 +34,6 @@ export function AdminSyncClient() {
     loadMeta();
   }, [loadMeta]);
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoggingIn(true);
-    setLoginError(null);
-    const ok = await verifyAdminPassword(password);
-    setLoggingIn(false);
-    if (ok) {
-      setAuthenticated(true);
-      return;
-    }
-    setLoginError("Contraseña incorrecta");
-  };
-
   const handleUpload = async () => {
     if (!file) return;
     setUploading(true);
@@ -62,13 +43,9 @@ export function AdminSyncClient() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const headers: HeadersInit = {};
-    if (password) headers.Authorization = authHeader;
-
     try {
-      const res = await fetch("/api/sync/inventory", {
+      const res = await adminFetch("/api/sync/inventory", {
         method: "POST",
-        headers,
         body: formData,
       });
       const data = await res.json();
@@ -112,24 +89,9 @@ export function AdminSyncClient() {
           </p>
         )}
 
-        {!authenticated ? (
-          <form onSubmit={handleLogin} className="glass-card space-y-4 rounded-2xl p-6">
-            <label className="block text-sm font-medium">{ui.adminPassword}</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-4 py-2.5"
-            />
-            {loginError && <p className="text-sm text-red-400">{loginError}</p>}
-            <Button type="submit" disabled={loggingIn}>
-              {loggingIn ? "Verificando…" : ui.adminLogin}
-            </Button>
-          </form>
-        ) : (
-          <div className="space-y-6">
-            <AdminInsights authHeader={authHeader} />
-            <div className="glass-card space-y-6 rounded-2xl p-6">
+        <div className="space-y-6">
+          <AdminInsights />
+          <div className="glass-card space-y-6 rounded-2xl p-6">
             <div>
               <a
                 href="/templates/inventory-template.csv"
@@ -210,9 +172,8 @@ export function AdminSyncClient() {
                 )}
               </div>
             )}
-            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

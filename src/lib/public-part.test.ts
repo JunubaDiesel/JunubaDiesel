@@ -1,17 +1,17 @@
 import { describe, expect, it } from "vitest";
-import type { Part } from "@/types/part";
+import type { InventoryLookupResult } from "@/types/part";
 import { toPublicLookupResult, toPublicPart } from "@/lib/public-part";
 
-const samplePart: Part = {
+const samplePart = {
   id: "p1",
   slug: "motor-starex",
   name: "Motor Starex",
   description: "Motor usado",
-  vehicle: "starex",
-  condition: "used",
-  category: "engine",
+  vehicle: "starex" as const,
+  condition: "used" as const,
+  category: "engine" as const,
   stockQty: 2,
-  stockStatus: "in_stock",
+  stockStatus: "in_stock" as const,
   oemNumbers: ["12345-67890"],
   images: ["/images/test.jpg"],
   specs: {},
@@ -37,7 +37,7 @@ describe("toPublicLookupResult", () => {
       found: true,
       totalStock: 2,
       products: [samplePart],
-    });
+    } satisfies InventoryLookupResult);
     expect(result.found).toBe(true);
     expect(result.products[0]).not.toHaveProperty("priceLab");
   });

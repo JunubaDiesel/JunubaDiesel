@@ -4,6 +4,8 @@ import { inventoryPaths } from "@/config/erp-mapping";
 import { isOemLikeCode } from "@/config/inven-mapping";
 import type { InventoryMeta, Part } from "@/types/part";
 import { normalizeOemNumber } from "@/lib/erp/stock";
+import { blobKeys } from "@/lib/storage/keys";
+import { isBlobStorageEnabled, writeBlobJson } from "@/lib/storage/blob-json";
 
 export function ensureDataDir(): string {
   const dir = path.join(process.cwd(), inventoryPaths.dataDir);
@@ -172,13 +174,40 @@ export function upsertPartInMaps(
   };
 }
 
+export async function writeInventoryProductsAsync(
+  products: Part[],
+  syncedAt: string,
+  source: InventoryMeta["source"]
+): Promise<void> {
+  const sorted = [...products].sort((a, b) => a.name.localeCompare(b.name, "es"));
+  const meta: InventoryMeta = {
+    syncedAt,
+    source,
+    totalProducts: sorted.length,
+    inStockCount: sorted.filter((p) => (p.stockQty ?? 0) > 0).length,
+  };
+
+  try {
+    ensureDataDir();
+    fs.writeFileSync(inventoryFilePath(), JSON.stringify(sorted, null, 2), "utf-8");
+    fs.writeFileSync(metaFilePath(), JSON.stringify(meta, null, 2), "utf-8");
+  } catch {
+    // Read-only filesystem (e.g. Vercel serverless)
+  }
+
+  if (isBlobStorageEnabled()) {
+    await writeBlobJson(blobKeys.inventory, sorted);
+    await writeBlobJson(blobKeys.inventoryMeta, meta);
+  }
+}
+
 export function writeInventoryProducts(
   products: Part[],
   syncedAt: string,
   source: InventoryMeta["source"]
 ): void {
-  ensureDataDir();
   const sorted = [...products].sort((a, b) => a.name.localeCompare(b.name, "es"));
+  ensureDataDir();
   fs.writeFileSync(inventoryFilePath(), JSON.stringify(sorted, null, 2), "utf-8");
   fs.writeFileSync(
     metaFilePath(),

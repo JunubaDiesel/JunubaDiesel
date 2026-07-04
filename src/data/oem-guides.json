@@ -1,0 +1,72 @@
+{
+  "guides": [
+    {
+      "id": "guide-starex-default",
+      "vehicleId": "starex",
+      "variantId": "starex-d4cb-2015",
+      "sections": [
+        {
+          "categoryId": "engine",
+          "title": "Motor D4CB — piezas frecuentes",
+          "parts": [
+            { "oemNumber": "391002A000", "name": "Filtro de aceite" },
+            { "oemNumber": "281132A000", "name": "Filtro de aire" },
+            { "oemNumber": "263202A000", "name": "Filtro combustible" }
+          ]
+        },
+        {
+          "categoryId": "transmission",
+          "title": "Transmisión — consultas habituales",
+          "parts": [
+            { "oemNumber": "430003A000", "name": "Embrague (kit consulta)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guide-staria-default",
+      "vehicleId": "staria",
+      "variantId": "staria-g4kd-2021",
+      "sections": [
+        {
+          "categoryId": "engine",
+          "title": "Motor G4KD — piezas frecuentes",
+          "parts": [
+            { "oemNumber": "391002A000", "name": "Filtro de aceite" },
+            { "oemNumber": "281132A000", "name": "Filtro de aire" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guide-porter-default",
+      "vehicleId": "porter",
+      "variantId": "porter-d4bh-2012",
+      "sections": [
+        {
+          "categoryId": "engine",
+          "title": "Motor D4BH — piezas frecuentes",
+          "parts": [
+            { "oemNumber": "391002A001", "name": "Filtro de aceite Porter" },
+            { "oemNumber": "281132A000", "name": "Filtro de aire" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guide-bongo-default",
+      "vehicleId": "bongo",
+      "variantId": "bongo-d4bh-2010",
+      "sections": [
+        {
+          "categoryId": "engine",
+          "title": "Motor D4BH — piezas frecuentes",
+          "parts": [
+            { "oemNumber": "391002A000", "name": "Filtro de aceite" },
+            { "oemNumber": "281132A000", "name": "Filtro de aire" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { isAuthorizedSyncRequest } from "@/lib/erp/auth";
 import { syncInventoryFromExcel } from "@/lib/erp/excel-sync";
 import { readInventoryMeta, syncInventoryFromCsv } from "@/lib/erp/sync";
+import { invalidateInventoryCache } from "@/lib/inventory";
+import { loadInventoryMetaFromBlob } from "@/lib/storage/persist";
+import { isBlobStorageEnabled } from "@/lib/storage/blob-json";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -19,9 +23,21 @@ function isExcelFile(file: File): boolean {
   );
 }
 
+async function afterInventorySync() {
+  invalidateInventoryCache();
+  revalidatePath("/");
+  revalidatePath("/parts");
+  revalidatePath("/buscar");
+}
+
 export async function GET(request: NextRequest) {
   if (!isAuthorizedSyncRequest(request.headers, process.env.ADMIN_PASSWORD)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
+  if (isBlobStorageEnabled()) {
+    const meta = await loadInventoryMetaFromBlob();
+    if (meta) return NextResponse.json(meta);
   }
 
   const meta = readInventoryMeta();
@@ -34,6 +50,7 @@ export async function POST(request: NextRequest) {
   }
 
   const contentType = request.headers.get("content-type") ?? "";
+  let result;
 
   if (contentType.includes("multipart/form-data")) {
     const formData = await request.formData();
@@ -51,23 +68,22 @@ export async function POST(request: NextRequest) {
 
     if (isExcelFile(file)) {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const result = await syncInventoryFromExcel(buffer);
-      return NextResponse.json(result);
+      result = await syncInventoryFromExcel(buffer);
+    } else {
+      const csvContent = await file.text();
+      result = await syncInventoryFromCsv(csvContent);
     }
-
-    const csvContent = await file.text();
-    const result = syncInventoryFromCsv(csvContent);
-    return NextResponse.json(result);
+  } else {
+    const raw = await request.text();
+    if (!raw.trim()) {
+      return NextResponse.json({ error: "Contenido vacío" }, { status: 400 });
+    }
+    if (raw.length > MAX_CSV_CHARS) {
+      return NextResponse.json({ error: "Contenido CSV demasiado grande" }, { status: 413 });
+    }
+    result = await syncInventoryFromCsv(raw);
   }
 
-  const raw = await request.text();
-  if (!raw.trim()) {
-    return NextResponse.json({ error: "Contenido vacío" }, { status: 400 });
-  }
-  if (raw.length > MAX_CSV_CHARS) {
-    return NextResponse.json({ error: "Contenido CSV demasiado grande" }, { status: 413 });
-  }
-
-  const result = syncInventoryFromCsv(raw);
+  await afterInventorySync();
   return NextResponse.json(result);
 }

@@ -48,9 +48,15 @@ export function ContactCTA() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </span>
-                  <a href={`mailto:${siteConfig.email}`} className="hover:text-accent">
-                    {siteConfig.email}
-                  </a>
+                  <span>
+                    {siteConfig.emails.map((address) => (
+                      <span key={address} className="block">
+                        <a href={`mailto:${address}`} className="hover:text-accent">
+                          {address}
+                        </a>
+                      </span>
+                    ))}
+                  </span>
                 </li>
                 <li className="flex items-center gap-3">
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-trust/10 text-trust">
@@ -91,7 +97,10 @@ export function ContactCTA() {
                 {ui.contactWhatsApp}
               </Button>
               <Button href={`mailto:${siteConfig.email}`} external variant="outline" size="lg">
-                {siteConfig.email}
+                {siteConfig.emails[0]}
+              </Button>
+              <Button href={`mailto:${siteConfig.emails[1]}`} external variant="outline" size="lg">
+                {siteConfig.emails[1]}
               </Button>
               <Button href={siteConfig.instagram} external variant="outline" size="lg">
                 Instagram DM

@@ -5,7 +5,7 @@ import { loadInventory } from "@/lib/erp/sync";
 import {
   indexExisting,
   upsertPartInMaps,
-  writeInventoryProducts,
+  writeInventoryProductsAsync,
 } from "@/lib/erp/sync-utils";
 import type { Part, SyncResult } from "@/types/part";
 
@@ -79,7 +79,7 @@ export async function syncInventoryFromStockExcel(buffer: Buffer): Promise<SyncR
   if (sheetsProcessed[invenSheetConfig.sheetName] === 0) {
     errors.push("No se encontraron productos en la hoja de stock.");
   } else {
-    writeInventoryProducts(products, syncedAt, "stock");
+    await writeInventoryProductsAsync(products, syncedAt, "stock");
   }
 
   return {

@@ -13,12 +13,16 @@
     "test:e2e": "playwright test",
     "sync:videos": "npx --yes tsx scripts/sync-delga-youtube.mts",
     "sync:videos:dry": "npx --yes tsx scripts/sync-delga-youtube.mts --dry-run",
-    "enrich:resources": "npx --yes tsx scripts/enrich-resource-descriptions.mts"
+    "enrich:resources": "npx --yes tsx scripts/enrich-resource-descriptions.mts",
+    "seed:oem-guides": "npx --yes tsx scripts/seed-oem-guides.mts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.88",
     "@ai-sdk/react": "^3.0.220",
+    "@upstash/ratelimit": "^2.0.6",
+    "@upstash/redis": "^1.35.3",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/blob": "^2.5.0",
     "@vercel/speed-insights": "^2.0.0",
     "ai": "^6.0.218",
     "clsx": "^2.1.1",
