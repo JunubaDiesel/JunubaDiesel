@@ -2,7 +2,7 @@
 
 Sitio B2B de repuestos para Hyundai Starex, Staria, Porter y Kia Bongo. Catálogo con stock JUNUBA, recursos de mantenimiento, consulta por formulario/WhatsApp y asistente IA.
 
-**Producción:** [junubadiesel.com](https://junubadiesel.com)  
+**Producción:** [www.junubadiesel.com](https://www.junubadiesel.com)  
 **Repositorio:** [github.com/JunubaDiesel/JunubaDiesel](https://github.com/JunubaDiesel/JunubaDiesel)
 
 > **Operación diaria:** ver [`docs/content-operations.md`](docs/content-operations.md) — stock, videos y landing.

@@ -4,7 +4,7 @@ export const siteConfig = {
   tagline: "Repuestos nuevos y usados para Starex, Staria, Porter y Bongo",
   description:
     "JUNUBA es especialista en repuestos nuevos y usados para vehículos comerciales Hyundai Starex, Hyundai Staria, Hyundai Porter y Kia Bongo, con foco en motores usados.",
-  url: "https://junubadiesel.com",
+  url: "https://www.junubadiesel.com",
   logoSrc: "/images/logo.png",
   logoAlt: "JUNUBA Corea Diesel — Repuestos",
   instagram: "https://www.instagram.com/junuba.korea/",
