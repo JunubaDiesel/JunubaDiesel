@@ -81,6 +81,8 @@ Autenticación: **Basic Auth** del navegador (`ADMIN_PASSWORD`).
 
 ## Despliegue Vercel
 
+**Plan completo:** [`docs/vercel-deploy-plan.md`](docs/vercel-deploy-plan.md)
+
 1. Push a GitHub
 2. [vercel.com/new](https://vercel.com/new) — **Continue with GitHub** (same account as `JunubaDiesel`) → Import `JunubaDiesel/JunubaDiesel`, branch **`main`**
 3. O por CLI:
