@@ -46,10 +46,14 @@ flowchart TB
 
 ```powershell
 cd "c:\Users\RYZEN  5 7000\Pictures\Junuba"
-npx vercel login          # GitHub 계정 JunubaDiesel 로 승인
+.\scripts\vercel-login-and-deploy.ps1   # login 5분 대기 후 자동 deploy
+# 또는
+npx vercel login
 .\scripts\deploy-production.ps1
 .\scripts\verify-production.ps1
 ```
+
+`VERCEL_TOKEN`을 `.env.local`에 넣으면 OAuth 없이 `deploy-production.ps1`만 실행 가능 (Vercel → Account → Tokens).
 
 스크립트가 자동 처리:
 - `vercel link` (프로젝트 연결)
