@@ -1,6 +1,8 @@
 name: Deploy Vercel
 
-# Run manually after adding VERCEL_* secrets (see README Despliegue section).
+# Manual Vercel deploy — requires VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+# in GitHub repo secrets. Do not use secrets in job-level `if:` (GitHub rejects it).
+# For first deploy, use Vercel Dashboard Import or: npx vercel login && npx vercel deploy --prod
 on:
   workflow_dispatch:
 

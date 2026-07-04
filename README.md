@@ -82,8 +82,8 @@ Autenticación: **Basic Auth** del navegador (`ADMIN_PASSWORD`).
 ## Despliegue Vercel
 
 1. Push a GitHub
-2. [vercel.com/signup](https://vercel.com/signup) — cuenta con GitHub `JunubaDiesel`
-3. Import `JunubaDiesel/JunubaDiesel` o ejecutar:
+2. [vercel.com/new](https://vercel.com/new) — **Continue with GitHub** (same account as `JunubaDiesel`) → Import `JunubaDiesel/JunubaDiesel`, branch **`main`**
+3. O por CLI:
    ```powershell
    npx vercel login
    .\scripts\deploy-production.ps1
@@ -108,7 +108,7 @@ Tras importar en Vercel, añadir secrets en GitHub → Settings → Secrets:
 | `VERCEL_ORG_ID` | Project → Settings → General |
 | `VERCEL_PROJECT_ID` | Project → Settings → General |
 
-Push a `main` dispara `.github/workflows/deploy-vercel.yml`.
+Ejecutar manualmente: GitHub → Actions → **Deploy Vercel** → Run workflow (después de añadir secrets).
 
 **Producción canonical:** `https://www.junubadiesel.com`
 
