@@ -44,6 +44,11 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
+      - run: npm run build
+        env:
+          GOOGLE_GENERATIVE_AI_API_KEY: ci-placeholder
+          ADMIN_PASSWORD: ci-admin
+
       - run: npm run test:e2e
         env:
           GOOGLE_GENERATIVE_AI_API_KEY: ci-placeholder
