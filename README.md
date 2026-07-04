@@ -82,10 +82,23 @@ Autenticación: **Basic Auth** del navegador (`ADMIN_PASSWORD`).
 ## Despliegue Vercel
 
 1. Push a GitHub
-2. Conectar repo en Vercel
-3. Añadir env vars (tabla arriba)
-4. Crear **Blob store** y copiar `BLOB_READ_WRITE_TOKEN`
-5. DNS `junubadiesel.com` → Vercel
+2. [vercel.com/signup](https://vercel.com/signup) — cuenta con GitHub `JunubaDiesel`
+3. Import `JunubaDiesel/JunubaDiesel` o ejecutar:
+   ```powershell
+   npx vercel login
+   .\scripts\deploy-production.ps1
+   ```
+4. Añadir env vars (tabla arriba) — el script lee `.env.local` y genera `ADMIN_PASSWORD` si falta
+5. Crear **Blob store** en Vercel → Storage → copiar `BLOB_READ_WRITE_TOKEN` → redeploy
+6. **DNS** (Squarespace/registrar, **no tocar MX**):
+   | Host | Tipo | Valor |
+   |------|------|-------|
+   | `@` | A | `76.76.21.21` |
+   | `www` | CNAME | `cname.vercel-dns.com` |
+7. Vercel → Domains → primary `www.junubadiesel.com`, apex → www redirect
+8. Verificar: `.\scripts\verify-production.ps1`
+
+**Producción canonical:** `https://www.junubadiesel.com`
 
 ## Licencia
 
