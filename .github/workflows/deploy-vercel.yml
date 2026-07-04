@@ -1,14 +1,12 @@
 name: Deploy Vercel
 
+# Run manually after adding VERCEL_* secrets (see README Despliegue section).
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ secrets.VERCEL_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
