@@ -28,7 +28,7 @@ Con el token activo, el Admin **guarda de forma persistente**:
 
 **Flujo diario de stock:**
 
-1. Entrar a `https://junubadiesel.com/admin/sync` (Basic Auth)
+1. Entrar a `https://www.junubadiesel.com/admin/sync` (Basic Auth)
 2. Subir **JUNUBA INFORMAR PIEZAS.xlsx** o CSV ERP
 3. Esperar confirmación — la landing y `/parts` se actualizan (revalidación automática)
 

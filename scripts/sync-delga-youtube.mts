@@ -301,7 +301,7 @@ function buildResourceFromMeta(
     title: meta.title.trim(),
     description: truncate(meta.description ?? meta.title),
     vehicle,
-    url: `https://junubadiesel.com/recursos/${slug}`,
+    url: `https://www.junubadiesel.com/recursos/${slug}`,
     youtubeId: meta.id,
     videoSrc: media.videoSrc,
     posterSrc: media.posterSrc,
