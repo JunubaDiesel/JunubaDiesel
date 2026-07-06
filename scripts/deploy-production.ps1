@@ -5,9 +5,16 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location $ProjectRoot
 
+function Test-VercelAuth {
+  if ($script:VercelToken) { return $true }
+  if (Test-Path "$env:USERPROFILE\.vercel\auth.json") { return $true }
+  $xdgAuth = Join-Path $env:APPDATA "xdg.data\com.vercel.cli\auth.json"
+  if (Test-Path $xdgAuth) { return $true }
+  return $false
+}
+
 function Require-VercelAuth {
-  if ($script:VercelToken) { return }
-  if (-not (Test-Path "$env:USERPROFILE\.vercel\auth.json")) {
+  if (-not (Test-VercelAuth)) {
     Write-Host "Vercel login required. Run: npx vercel login" -ForegroundColor Yellow
     Write-Host "Or add VERCEL_TOKEN to .env.local (Vercel → Account → Tokens)" -ForegroundColor Yellow
     exit 1
@@ -38,9 +45,9 @@ function Read-EnvLocalValue([string]$Name) {
 function Set-VercelEnvIfMissing([string]$Name, [string]$Value) {
   if ([string]::IsNullOrWhiteSpace($Value)) { return }
   $existing = if ($script:VercelToken) {
-    npx vercel env ls production --token $script:VercelToken 2>$null | Select-String $Name
+    npx vercel env ls production --token $script:VercelToken 2>&1 | Out-String | Select-String $Name
   } else {
-    npx vercel env ls production 2>$null | Select-String $Name
+    npx vercel env ls production 2>&1 | Out-String | Select-String $Name
   }
   if ($existing) {
     Write-Host "  env $Name already set (skip)"
@@ -84,8 +91,8 @@ Write-Host "`n=== Production deploy ===" -ForegroundColor Cyan
 Invoke-Vercel deploy --prod --yes
 
 Write-Host "`n=== Domains ===" -ForegroundColor Cyan
-Invoke-Vercel domains add www.junubadiesel.com
-Invoke-Vercel domains add junubadiesel.com
+Invoke-Vercel domains add www.junubadiesel.com junuba-diesel
+Invoke-Vercel domains add junubadiesel.com junuba-diesel
 
 Write-Host @"
 

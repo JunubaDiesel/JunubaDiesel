@@ -13,6 +13,12 @@ function Read-EnvLocalValue([string]$Name) {
   return $null
 }
 
+function Test-VercelAuth {
+  if (Test-Path "$env:USERPROFILE\.vercel\auth.json") { return $true }
+  $xdgAuth = Join-Path $env:APPDATA "xdg.data\com.vercel.cli\auth.json"
+  return Test-Path $xdgAuth
+}
+
 $token = Read-EnvLocalValue "VERCEL_TOKEN"
 if ($token) {
   $env:VERCEL_TOKEN = $token
@@ -21,7 +27,7 @@ if ($token) {
   exit $LASTEXITCODE
 }
 
-if (Test-Path "$env:USERPROFILE\.vercel\auth.json") {
+if (Test-VercelAuth) {
   Write-Host "Vercel auth found." -ForegroundColor Green
   & "$PSScriptRoot\deploy-production.ps1"
   exit $LASTEXITCODE
@@ -36,7 +42,7 @@ Get-Content "$env:TEMP\vercel-login-err.txt","$env:TEMP\vercel-login-out.txt" -E
 
 $deadline = (Get-Date).AddMinutes(5)
 while ((Get-Date) -lt $deadline) {
-  if (Test-Path "$env:USERPROFILE\.vercel\auth.json") {
+  if (Test-VercelAuth) {
     Write-Host "`nLogin successful." -ForegroundColor Green
     try { Stop-Process -Id $login.Id -Force -ErrorAction SilentlyContinue } catch {}
     & "$PSScriptRoot\deploy-production.ps1"
